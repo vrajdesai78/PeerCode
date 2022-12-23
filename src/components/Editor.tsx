@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Editor from "@monaco-editor/react";
 import { initSocket } from "../utils";
 
-const EditorComponent = () => {
+const EditorComponent: React.FC<any> = ({ roomID }) => {
   const [code, setCode] = useState("const ");
   const [language, setLanguage] = useState("javascript");
   const socketRef = React.useRef<any>(null);
@@ -20,12 +20,14 @@ const EditorComponent = () => {
   };
 
   const handleEditorChange = (value: any) => {
-    socketRef.current?.send(value);
+    socketRef.current?.send({ room: roomID, code: value });
     setCode(value);
   };
   useEffect(() => {
     socketRef.current?.on("message", (data: any) => {
-      setCode(data);
+      if (roomID === data?.room) {
+        setCode(data?.code);
+      }
     });
   }, [socketRef.current]);
 

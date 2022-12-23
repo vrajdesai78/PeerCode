@@ -42,7 +42,7 @@ const Room = () => {
           </div>
         </div>
         <div className="w-[70vw] h-[80vh]  rounded-tl-none  bg-grey rounded-md border-main border-[1px] ">
-          {workspace === WORKSPACES.EDITOR && <Editor />}
+          {workspace === WORKSPACES.EDITOR && <Editor roomID={roomid} />}
           {workspace === WORKSPACES.WHITEBOARD && <WhiteBoard />}
         </div>
       </section>
