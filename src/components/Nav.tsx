@@ -1,4 +1,5 @@
 import React from "react";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 function Nav() {
   return (
@@ -20,6 +21,10 @@ function Nav() {
           />
           Join a Room
         </button>
+        <div className="">
+          {" "}
+          <ConnectButton label="Connect Wallet" accountStatus={"full"} />
+        </div>
       </div>
     </div>
   );

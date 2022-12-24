@@ -9,14 +9,17 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@huddle01/huddle01-client": "^0.0.10",
     "@monaco-editor/react": "^4.4.6",
     "@next/font": "13.1.0",
+    "@rainbow-me/rainbowkit": "^0.8.1",
     "@types/node": "18.11.17",
     "@types/react": "18.0.26",
     "@types/react-dom": "18.0.9",
     "codemirror": "^6.0.1",
     "eslint": "8.30.0",
     "eslint-config-next": "13.1.0",
+    "ethers": "^5.7.2",
     "next": "13.1.0",
     "react": "18.2.0",
     "react-codemirror2": "^7.2.1",
@@ -24,7 +27,8 @@
     "react-hot-toast": "^2.4.0",
     "socket.io": "^4.5.4",
     "socket.io-client": "^4.5.4",
-    "typescript": "4.9.4"
+    "typescript": "4.9.4",
+    "wagmi": "^0.9.5"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
