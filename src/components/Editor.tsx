@@ -39,9 +39,10 @@ const EditorComponent: React.FC<any> = ({ roomID }) => {
   }, []);
   return (
     <>
-      <div className="">
+      <div className="flex justify-end m-1">
         <select
           id="languages"
+          className="p-2"
           onChange={(e) => {
             setLanguage(e.target.value);
           }}

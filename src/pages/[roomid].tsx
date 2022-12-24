@@ -5,7 +5,7 @@ import WhiteBoard from "../components/WhiteBoard";
 
 const WORKSPACES = {
   EDITOR: "Editor",
-  WHITEBOARD: "Whiteboard",
+  WHITEBOARD: "Lorem",
 };
 
 const Room = () => {
@@ -13,7 +13,7 @@ const Room = () => {
   const { roomid } = router.query;
   const [workspace, setWorkspace] = useState(WORKSPACES.EDITOR);
   return (
-    <main className="flex justify-evenly mt-5">
+    <main className="flex justify-evenly mt-5 ">
       <section className="mt-5">
         <div className="w-[400px] h-[250px] bg-grey rounded-md border-main border-[1px] m-3"></div>
         <div className="w-[400px] h-[250px] bg-grey rounded-md border-gray-600 border-[1px] m-3"></div>
@@ -41,7 +41,7 @@ const Room = () => {
             {WORKSPACES.WHITEBOARD}
           </div>
         </div>
-        <div className="w-[70vw] h-[80vh]  rounded-tl-none  bg-grey rounded-md border-main border-[1px] ">
+        <div className="w-[70vw] h-[80vh]  rounded-tl-none  bg-[#1E1E1E] rounded-md border-main border-2 pb-20 ">
           {workspace === WORKSPACES.EDITOR && <Editor roomID={roomid} />}
           {workspace === WORKSPACES.WHITEBOARD && <WhiteBoard />}
         </div>
