@@ -21,7 +21,7 @@ function WhiteBoard() {
   const [toolType, setToolType] = useState("pencil");
   const [selectedElement, setSelectedElement] = useState(null);
   const [colorWidth, setColorWidth] = useState({
-    hex: "#000",
+    hex: "#bbbbbb",
     hsv: {},
     rgb: {},
   });
