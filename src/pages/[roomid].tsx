@@ -1,8 +1,6 @@
 //@ts-ignore
 import { useRouter } from "next/router";
 import { useState } from "react";
-import Editor from "../components/Editor";
-import WhiteBoard from "../components/WhiteBoard";
 import {
   HuddleClientProvider,
   getHuddleClient,
@@ -13,9 +11,18 @@ import PeerVideoAudioElem from "../components/PeerElement";
 import MeVideoElem from "../components/MyVideoElement";
 import { useAccount } from "wagmi";
 
+import dynamic from "next/dynamic";
+const WhiteBoard = dynamic(() => import("../components/WhiteBoard"), {
+  ssr: false,
+});
+const Editor = dynamic(() => import("../components/Editor"), {
+  ssr: false,
+});
+
 const WORKSPACES = {
   EDITOR: "Editor",
-  WHITEBOARD: "Lorem",
+  WHITEBOARD: "Whiteboard",
+  NOTES: "Notes",
 };
 
 const Room = () => {
@@ -23,7 +30,7 @@ const Room = () => {
   const router = useRouter();
   const { roomid } = router.query;
 
-  const [workspace, setWorkspace] = useState(WORKSPACES.EDITOR);
+  const [workspace, setWorkspace] = useState(WORKSPACES.WHITEBOARD);
   const huddleClient = getHuddleClient(
     "a74eec0d320d1ddbcedc423d4e8fc2dce13e007ca4ad16e1acac164b909efdd7"
   );
@@ -64,8 +71,8 @@ const Room = () => {
 
             {lobbyPeers[0] && <h2>Lobby Peers</h2>}
             <div>
-              {lobbyPeers.map((peer) => (
-                <div>{peer.peerId}</div>
+              {lobbyPeers.map((peer, index) => (
+                <div key={index}>{peer.peerId}</div>
               ))}
             </div>
 
@@ -85,7 +92,7 @@ const Room = () => {
               className={`${
                 workspace === WORKSPACES.EDITOR
                   ? " bg-main text-title "
-                  : " bg-grey"
+                  : " bg-grey  border-t-0 border-b-0 border-l-0 border-r-[1px]  border-[#1D1D1C] "
               }  rounded-tl-md text-sm cursor-pointer p-1 px-2`}
               onClick={() => setWorkspace(WORKSPACES.EDITOR)}
             >
@@ -93,9 +100,19 @@ const Room = () => {
             </div>
             <div
               className={`${
+                workspace === WORKSPACES.NOTES
+                  ? " bg-main text-title  "
+                  : " bg-grey  "
+              }  text-sm  cursor-pointer p-1 px-2`}
+              onClick={() => setWorkspace(WORKSPACES.NOTES)}
+            >
+              {WORKSPACES.NOTES}
+            </div>
+            <div
+              className={`${
                 workspace === WORKSPACES.WHITEBOARD
                   ? " bg-main text-title "
-                  : " bg-grey  "
+                  : " bg-grey border-t-0 border-b-0 border-r-0 border-l-[1px]  border-[#1D1D1C] "
               } rounded-tr-md text-sm  cursor-pointer p-1 px-2`}
               onClick={() => setWorkspace(WORKSPACES.WHITEBOARD)}
             >
