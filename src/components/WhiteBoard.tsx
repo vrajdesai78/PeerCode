@@ -36,7 +36,9 @@ function WhiteBoard() {
 
   const startDrawing = (event) => {
     setDrawing(true);
-    const { clientX, clientY } = event;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const clientX = event.clientX - rect.left;
+    const clientY = event.clientY - rect.top;
     const newEle = createElement(clientX, clientY, clientX, clientY);
     setElements((state) => [...state, newEle]);
   };
@@ -45,9 +47,9 @@ function WhiteBoard() {
   };
   const draw = (event) => {
     if (!drawing) return;
-
-    const { clientX, clientY } = event;
-    console.log(clientX, clientY);
+    const rect = canvasRef.current.getBoundingClientRect();
+    const clientX = event.clientX - rect.left;
+    const clientY = event.clientY - rect.top;
     const index = elements.length - 1;
     const { x1, y1 } = elements[index];
     const updatedEle = createElement(x1, y1, clientX, clientY);
