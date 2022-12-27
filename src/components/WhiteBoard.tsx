@@ -10,10 +10,13 @@ function createElement(x1, y1, x2, y2) {
 }
 const TOOLS = {
   PEN: "pen",
+  LINE: "line",
+  CIRCLE: "circle",
+  RECTANGLE: "rectangle",
 };
 
 function WhiteBoard() {
-  const [tool, setTool] = useState(TOOLS.PEN);
+  const [currentTool, setCurrentTool] = useState(TOOLS.LINE);
   const [elements, setElements] = useState([]);
   const [drawing, setDrawing] = useState(false);
 
@@ -24,6 +27,7 @@ function WhiteBoard() {
   useEffect(() => {
     setHeightCntr(containerRef.current.clientHeight);
     setWidthCntr(containerRef.current.clientWidth);
+    console.log(currentTool);
   });
 
   useLayoutEffect(() => {
@@ -31,6 +35,7 @@ function WhiteBoard() {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const rc = rough.canvas(canvas);
+    console.log(elements);
     elements.forEach((ele) => rc.draw(ele.roughEle));
   }, [elements]);
 
@@ -52,6 +57,17 @@ function WhiteBoard() {
     const clientY = event.clientY - rect.top;
     const index = elements.length - 1;
     const { x1, y1 } = elements[index];
+    // let   updatedEle ;
+    // switch (currentTool) {
+    //   case TOOLS.LINE:
+    //     updatedEle = createElement(x1, y1, clientX, clientY);
+    //     break;
+    // case TOOLS.RECTANGLE:
+    //   width = x2-x1;  height = y2-y1;
+    //   default:
+    //     updatedEle = createElement(x1, y1, clientX, clientY);
+    //     break;
+    // }
     const updatedEle = createElement(x1, y1, clientX, clientY);
     const copyElement = [...elements];
     copyElement[index] = updatedEle;
@@ -60,14 +76,25 @@ function WhiteBoard() {
 
   return (
     <div className="w-full h-full">
-      <div className="bg-grey p-2 px-10">
-        <div
-          className={`${
-            tool === TOOLS.PEN ? " border-main border-[1px]  " : "  "
-          }  cursor-pointer p-2 bg-[#1E1E1E] w-fit rounded-md`}
-        >
-          <Pen color="#BBBBBB" />
-        </div>
+      <div className="bg-grey p-2 px-10 flex">
+        <ToolbarButton
+          tool={TOOLS.LINE}
+          icon={"/line.svg"}
+          currentTool={currentTool}
+          setCurrentTool={setCurrentTool}
+        />
+        <ToolbarButton
+          tool={TOOLS.CIRCLE}
+          icon={"/circle.svg"}
+          currentTool={currentTool}
+          setCurrentTool={setCurrentTool}
+        />
+        <ToolbarButton
+          tool={TOOLS.RECTANGLE}
+          icon={"/box.svg"}
+          currentTool={currentTool}
+          setCurrentTool={setCurrentTool}
+        />
       </div>
       <div className="grid-bg w-full h-full" ref={containerRef}>
         <canvas
@@ -78,7 +105,7 @@ function WhiteBoard() {
           onMouseUp={finishDrawing}
           onMouseMove={draw}
           ref={canvasRef}
-          className="border-red-700 border-2"
+          className=""
         >
           Canvas
         </canvas>
@@ -87,4 +114,16 @@ function WhiteBoard() {
   );
 }
 
+const ToolbarButton = ({ tool, icon, currentTool, setCurrentTool }) => {
+  return (
+    <div
+      onClick={() => setCurrentTool(tool)}
+      className={`${
+        currentTool === tool ? " outline-main outline " : "  "
+      }  cursor-pointer mx-2 p-2 bg-[#1E1E1E] w-fit rounded-md`}
+    >
+      <img src={icon} alt={tool} />
+    </div>
+  );
+};
 export default WhiteBoard;
