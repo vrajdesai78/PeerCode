@@ -21,6 +21,6 @@
     "**/*.tsx",
     "src/components/EditorEmbed.jsx",
     "src/components/Editor.tsx"
-  ],
+, "src/components/Element.js", "src/components/Toolbar.jsx"  ],
   "exclude": ["node_modules"]
 }
