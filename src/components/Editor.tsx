@@ -38,11 +38,11 @@ const EditorComponent: React.FC<any> = ({ roomID }) => {
     init();
   }, []);
   return (
-    <>
-      <div className="flex justify-end m-1">
+    <div className="pb-20 h-full">
+      <div className=" absolute top-0 right-0 rounded-lg z-10">
         <select
           id="languages"
-          className="p-2"
+          className="p-2 rounded-bl-lg rounded-tr-md border-main border-l-0 border-b-0"
           onChange={(e) => {
             setLanguage(e.target.value);
           }}
@@ -63,7 +63,7 @@ const EditorComponent: React.FC<any> = ({ roomID }) => {
         defaultValue="// Add Code Here"
         onChange={handleEditorChange}
       />
-    </>
+    </div>
   );
 };
 export default EditorComponent;
