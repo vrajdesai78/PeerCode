@@ -44,104 +44,107 @@ const Toolbar = ({
   };
   return (
     <>
-      <ToolbarButton
-        tool="line"
-        icon="/line.svg"
-        currentTool={toolType}
-        handleClick={() => {
-          setToolType("line");
-          setWidth(1);
-          setShapeWidth(1);
-        }}
-      />
-      <ToolbarButton
-        tool="rectangle"
-        icon="/box.svg"
-        currentTool={toolType}
-        handleClick={() => {
-          setToolType("rectangle");
-          setWidth(1);
-          setShapeWidth(1);
-        }}
-      />
-      <ToolbarButton
-        tool="circle"
-        icon="/circle.svg"
-        currentTool={toolType}
-        handleClick={() => {
-          setToolType("circle");
-          setWidth(1);
-          setShapeWidth(1);
-        }}
-      />
-      <ToolbarButton
-        tool="triangle"
-        icon="/triangle.svg"
-        currentTool={toolType}
-        handleClick={() => {
-          setToolType("triangle");
-          setWidth(1);
-          setShapeWidth(1);
-        }}
-      />
-      <ToolbarButton
-        tool="pencil"
-        icon="/pencil.svg"
-        currentTool={toolType}
-        handleClick={() => {
-          setToolType("pencil");
-          setWidth(1);
-          setShapeWidth(1);
-        }}
-      />
-      <ToolbarButton
-        tool="brush"
-        icon="/brush.svg"
-        currentTool={toolType}
-        handleClick={() => {
-          setToolType("brush");
-          setWidth(10);
-          setShapeWidth(1);
-        }}
-      />
-      <ToolbarButton
-        tool="eraser"
-        icon="/eraser.svg"
-        currentTool={toolType}
-        handleClick={() => {
-          setToolType("eraser");
-          setWidth(10);
-          setShapeWidth(1);
-        }}
-      />
-      <div></div> <div></div>
-      <div
-        className="cursor-pointer  flex items-center px-4 mx-2 p-2 bg-[#1E1E1E] w-fit rounded-md"
-        onClick={() => {
-          setElements([]);
-          setPath([]);
-          return;
-        }}
-      >
-        Reset
+      <div className="flex">
+        <ToolbarButton
+          tool="line"
+          icon="/line.svg"
+          currentTool={toolType}
+          handleClick={() => {
+            setToolType("line");
+            setWidth(1);
+            setShapeWidth(1);
+          }}
+        />
+        <ToolbarButton
+          tool="rectangle"
+          icon="/box.svg"
+          currentTool={toolType}
+          handleClick={() => {
+            setToolType("rectangle");
+            setWidth(1);
+            setShapeWidth(1);
+          }}
+        />
+        <ToolbarButton
+          tool="circle"
+          icon="/circle.svg"
+          currentTool={toolType}
+          handleClick={() => {
+            setToolType("circle");
+            setWidth(1);
+            setShapeWidth(1);
+          }}
+        />
+        <ToolbarButton
+          tool="triangle"
+          icon="/triangle.svg"
+          currentTool={toolType}
+          handleClick={() => {
+            setToolType("triangle");
+            setWidth(1);
+            setShapeWidth(1);
+          }}
+        />
+        <ToolbarButton
+          tool="pencil"
+          icon="/pencil.svg"
+          currentTool={toolType}
+          handleClick={() => {
+            setToolType("pencil");
+            setWidth(1);
+            setShapeWidth(1);
+          }}
+        />
+        <ToolbarButton
+          tool="brush"
+          icon="/brush.svg"
+          currentTool={toolType}
+          handleClick={() => {
+            setToolType("brush");
+            setWidth(10);
+            setShapeWidth(1);
+          }}
+        />
+        <ToolbarButton
+          tool="eraser"
+          icon="/eraser.svg"
+          currentTool={toolType}
+          handleClick={() => {
+            setToolType("eraser");
+            setWidth(10);
+            setShapeWidth(1);
+          }}
+        />
       </div>
-      <div
-        className="cursor-pointer  flex items-center px-4 mx-2 p-2 bg-[#1E1E1E] w-fit rounded-md text-xl"
-        onClick={decreaseWidth}
-      >
-        -
-      </div>
-      <div
-        className="cursor-pointer  flex items-center px-4 mx-2 p-2 bg-[#1E1E1E] w-fit rounded-md  text-xl"
-        onClick={increaseWidth}
-      >
-        +
-      </div>
-      {displayStroke && (
-        <div className="">
-          <ColourPicker setColorWidth={setColorWidth} />
+      <div className="flex">
+        <div
+          className="cursor-pointer hover:outline-main hover:outline flex items-center px-4 mx-2 p-2 bg-[#1E1E1E] w-fit rounded-md"
+          onClick={() => {
+            setElements([]);
+            setPath([]);
+            return;
+          }}
+        >
+          <img src={"/bin.svg"} alt={"bin"} />
         </div>
-      )}
+        <div
+          className="cursor-pointer hover:outline-main hover:outline flex items-center px-4 mx-2 p-2 bg-[#1E1E1E] w-fit rounded-md text-xl"
+          onClick={decreaseWidth}
+        >
+          <img src={"/minus.svg"} alt={"minus"} />
+        </div>
+        <div
+          className="cursor-pointer hover:outline-main hover:outline flex items-center px-4 mx-2 p-2 bg-[#1E1E1E] w-fit rounded-md  text-xl"
+          onClick={increaseWidth}
+        >
+          <img src={"/plus.svg"} alt={"plus"} />
+        </div>
+        {displayStroke && (
+          <div className="">
+            <ColourPicker setColorWidth={setColorWidth} />
+          </div>
+        )}
+      </div>
     </>
   );
 };
@@ -153,8 +156,8 @@ const ToolbarButton = ({ tool, icon, currentTool, handleClick }) => {
     <div
       onClick={() => handleClick()}
       className={`${
-        currentTool === tool ? " outline-main outline " : "  "
-      }  flex items-center px-4 cursor-pointer mx-2 p-2 bg-[#1E1E1E] w-fit rounded-md`}
+        currentTool === tool ? " outline-main outline  " : "  "
+      }  flex hover:outline-main hover:outline items-center px-4 cursor-pointer mx-2 p-2 bg-[#1E1E1E] w-fit rounded-md`}
     >
       <img src={icon} alt={tool} />
     </div>

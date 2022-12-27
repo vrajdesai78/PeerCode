@@ -13,6 +13,7 @@ import Toolbar from "./Toolbar";
 
 function WhiteBoard() {
   const containerRef = useRef(null);
+  const canvasRef = useRef(null);
   const [points, setPoints] = useState([]);
   const [path, setPath] = useState([]);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -145,7 +146,9 @@ function WhiteBoard() {
   };
 
   const handleMouseDown = (e) => {
-    const { clientX, clientY } = e;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const clientX = e.clientX - rect.left;
+    const clientY = e.clientY - rect.top;
     const canvas = document.getElementById("canvas");
     const context = canvas.getContext("2d");
 
@@ -212,7 +215,9 @@ function WhiteBoard() {
   const handleMouseMove = (e) => {
     const canvas = document.getElementById("canvas");
     const context = canvas.getContext("2d");
-    const { clientX, clientY } = e;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const clientX = e.clientX - rect.left;
+    const clientY = e.clientY - rect.top;
     if (toolType === "selection") {
       const element = getElementAtPosition(clientX, clientY, elements);
       e.target.style.cursor = element
@@ -312,7 +317,7 @@ function WhiteBoard() {
 
   return (
     <div className="w-full h-full">
-      <div className="bg-grey p-2 px-10 flex">
+      <div className="bg-grey p-2 px-10 flex justify-between">
         <Toolbar
           toolType={toolType}
           setToolType={setToolType}
@@ -328,7 +333,7 @@ function WhiteBoard() {
       <div className="grid-bg w-full h-full" ref={containerRef}>
         <canvas
           id="canvas"
-          className="App"
+          ref={canvasRef}
           width={window.innerWidth}
           height={window.innerHeight}
           onMouseDown={handleMouseDown}
