@@ -22,7 +22,7 @@ function WhiteBoard() {
   const [toolType, setToolType] = useState("pencil");
   const [selectedElement, setSelectedElement] = useState(null);
   const [colorWidth, setColorWidth] = useState({
-    hex: "#bbbbbb",
+    hex: "#32B37A",
     hsv: {},
     rgb: {},
   });
@@ -168,6 +168,7 @@ function WhiteBoard() {
       setAction("erasing");
 
       checkPresent(clientX, clientY);
+    } else if (toolType === "text") {
     } else {
       const id = elements.length;
       if (toolType === "pencil" || toolType === "brush") {

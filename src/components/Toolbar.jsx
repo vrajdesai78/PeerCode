@@ -1,5 +1,5 @@
 //@ts-nocheck
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import ColourPicker from "./ColourPicker";
 
 const Toolbar = ({
@@ -14,11 +14,25 @@ const Toolbar = ({
   setShapeWidth,
 }) => {
   const [displayStroke, setDisplayStroke] = useState(false);
-
   const handleClickStroke = () => {
     setDisplayStroke(!displayStroke);
     setColorWidth(colorWidth);
   };
+
+  const ref = useRef(null);
+  const handleClickOutside = (event) => {
+    if (ref.current && !ref.current.contains(event.target)) {
+      setDisplayStroke(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside, true);
+    //cleanup
+    return () => {
+      document.removeEventListener("click", handleClickOutside, true);
+    };
+  }, []);
 
   const increaseWidth = () => {
     if (toolType === "brush" || toolType === "eraser") {
@@ -127,6 +141,21 @@ const Toolbar = ({
         >
           <img src={"/bin.svg"} alt={"bin"} />
         </div>
+
+        <div
+          style={{
+            outline: `2px solid ${colorWidth.hex}`,
+          }}
+          className={`cursor-pointer  flex items-center px-4 mx-2 p-2 bg-[#1E1E1E] w-fit rounded-md  text-xl`}
+          onClick={() => setDisplayStroke(true)}
+        >
+          <img src={"/color.svg"} alt={"color"} />
+        </div>
+        {displayStroke && (
+          <div className="absolute mt-10" ref={ref}>
+            <ColourPicker setColorWidth={setColorWidth} />
+          </div>
+        )}
         <div
           className="cursor-pointer hover:outline-main hover:outline flex items-center px-4 mx-2 p-2 bg-[#1E1E1E] w-fit rounded-md text-xl"
           onClick={decreaseWidth}
@@ -139,11 +168,6 @@ const Toolbar = ({
         >
           <img src={"/plus.svg"} alt={"plus"} />
         </div>
-        {displayStroke && (
-          <div className="">
-            <ColourPicker setColorWidth={setColorWidth} />
-          </div>
-        )}
       </div>
     </>
   );
