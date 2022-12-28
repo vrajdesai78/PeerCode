@@ -331,7 +331,7 @@ function WhiteBoard() {
           setShapeWidth={setShapeWidth}
         />
       </div>
-      <div className="grid-bg w-full h-full" ref={containerRef}>
+      <div className="grid-bg w-full h-full overflow-hidden" ref={containerRef}>
         <canvas
           id="canvas"
           ref={canvasRef}
