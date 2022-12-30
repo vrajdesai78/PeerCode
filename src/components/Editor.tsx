@@ -3,11 +3,9 @@ import _ from "lodash";
 import Editor from "@monaco-editor/react";
 import { initSocket } from "../utils";
 
-const EditorComponent: React.FC<any> = (props) => {
-  const roomid = props.roomid;
+const EditorComponent: React.FC<any> = (roomid, userid) => {
   const [code, setCode] = useState("const ");
   const [language, setLanguage] = useState("javascript");
-  const [userid, setUserid] = useState(_.random(1000));
   const socketRef = React.useRef<any>(null);
   const onChange = (action: string, data: any) => {
     switch (action) {
@@ -26,11 +24,6 @@ const EditorComponent: React.FC<any> = (props) => {
     setCode(value);
   };
   useEffect(() => {
-    socketRef.current?.on("sync-res", (data: any) => {
-      if (userid === data.userid && roomid === roomid) {
-        setCode(data?.code);
-      }
-    });
     socketRef.current?.on("message", (data: any) => {
       if (roomid === data?.room && userid !== data?.userid) {
         setCode(data?.code);
@@ -41,9 +34,9 @@ const EditorComponent: React.FC<any> = (props) => {
   useEffect(() => {
     const init = async () => {
       socketRef.current = await initSocket();
+      console.log("editor socket init");
     };
     init();
-    socketRef.current?.emit("sync", { roomid: roomid, userid });
   }, []);
   return (
     <div className="pb-20 h-full">

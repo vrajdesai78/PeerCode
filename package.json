@@ -25,6 +25,7 @@
     "react-color-palette": "^6.2.0",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.4.0",
+    "react-quill": "^2.0.0",
     "roughjs": "^4.4.1",
     "socket.io": "^4.5.4",
     "socket.io-client": "^4.5.4",
@@ -32,6 +33,7 @@
     "wagmi": "^0.9.5"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.191",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.20",
     "tailwindcss": "^3.2.4"

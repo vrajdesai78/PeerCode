@@ -10,12 +10,17 @@ import { useHuddleStore } from "@huddle01/huddle01-client/store";
 import PeerVideoAudioElem from "../components/PeerElement";
 import MeVideoElem from "../components/MyVideoElement";
 import { useAccount } from "wagmi";
+import _ from "lodash";
 
 import dynamic from "next/dynamic";
+
 const WhiteBoard = dynamic(() => import("../components/WhiteBoard"), {
   ssr: false,
 });
 const Editor = dynamic(() => import("../components/Editor"), {
+  ssr: false,
+});
+const Notes = dynamic(() => import("../components/Notes"), {
   ssr: false,
 });
 
@@ -29,7 +34,7 @@ const Room = () => {
   const { address, isConnected } = useAccount();
   const router = useRouter();
   const { roomid } = router.query;
-
+  const userid = _.random(1000);
   const [workspace, setWorkspace] = useState(WORKSPACES.EDITOR);
   const huddleClient = getHuddleClient(
     "a74eec0d320d1ddbcedc423d4e8fc2dce13e007ca4ad16e1acac164b909efdd7"
@@ -119,9 +124,16 @@ const Room = () => {
               {WORKSPACES.WHITEBOARD}
             </div>
           </div>
-          <div className="relative w-[70vw] h-[80vh]  rounded-tl-none  bg-[#1E1E1E] rounded-md border-main border-2 pb-20 ">
-            {workspace === WORKSPACES.EDITOR && <Editor roomid={roomid} />}
-            {workspace === WORKSPACES.WHITEBOARD && <WhiteBoard />}
+          <div className="relative w-[70vw] h-[80vh]  rounded-tl-none  bg-[#1E1E1E] rounded-md border-main border-2  ">
+            {workspace === WORKSPACES.EDITOR && (
+              <Editor roomid={roomid} userid={userid} />
+            )}
+            {workspace === WORKSPACES.WHITEBOARD && (
+              <WhiteBoard roomid={roomid} userid={userid} />
+            )}
+            {workspace === WORKSPACES.NOTES && (
+              <Notes roomid={roomid} userid={userid} />
+            )}
           </div>
         </section>
       </main>

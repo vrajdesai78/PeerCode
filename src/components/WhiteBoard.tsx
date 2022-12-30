@@ -10,9 +10,20 @@ import {
   getElementAtPosition,
 } from "./Element";
 import Toolbar from "./Toolbar";
+import _ from "lodash";
+import { initSocket } from "../utils";
 
-function WhiteBoard() {
+function blob2canvas(canvas, blob) {
+  let img = new window.Image();
+  img.addEventListener("load", function () {
+    canvas.getContext("2d").drawImage(img, 0, 0);
+  });
+  img.setAttribute("src", blob);
+}
+
+function WhiteBoard({ roomid, userid }) {
   const containerRef = useRef(null);
+  const socketRef = React.useRef<any>(null);
   const canvasRef = useRef(null);
   const [points, setPoints] = useState([]);
   const [path, setPath] = useState([]);
@@ -316,6 +327,36 @@ function WhiteBoard() {
     setAction("none");
   };
 
+  useEffect(() => {
+    const emitNewElements = () => {
+      console.log("whiteboard draw emit");
+      canvasRef.current.toBlob((blob) => {
+        return socketRef.current?.emit("draw", {
+          room: roomid,
+          userid,
+          blob,
+        });
+      });
+    };
+    const debounced = _.debounce(emitNewElements, 1000);
+    debounced();
+  }, [elements, path, points]);
+  useEffect(() => {
+    socketRef.current?.on("draw", (data: any) => {
+      if (roomid === data?.room && userid !== data?.userid) {
+        const blob = data.blob;
+        blob2canvas(canvasRef.current, blob);
+      }
+    });
+  }, [socketRef.current]);
+
+  useEffect(() => {
+    const init = async () => {
+      socketRef.current = await initSocket();
+      console.log("whiteboard socket init");
+    };
+    init();
+  }, []);
   return (
     <div className="w-full h-full">
       <div className="bg-grey p-2 px-10 flex justify-between">
