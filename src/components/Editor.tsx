@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-
+import _ from "lodash";
 import Editor from "@monaco-editor/react";
 import { initSocket } from "../utils";
 
-const EditorComponent: React.FC<any> = ({ roomID }) => {
+const EditorComponent: React.FC<any> = (props) => {
+  const roomid = props.roomid;
   const [code, setCode] = useState("const ");
   const [language, setLanguage] = useState("javascript");
+  const [userid, setUserid] = useState(_.random(1000));
   const socketRef = React.useRef<any>(null);
   const onChange = (action: string, data: any) => {
     switch (action) {
@@ -20,12 +22,17 @@ const EditorComponent: React.FC<any> = ({ roomID }) => {
   };
 
   const handleEditorChange = (value: any) => {
-    socketRef.current?.send({ room: roomID, code: value });
+    socketRef.current?.emit("message", { room: roomid, userid, code: value });
     setCode(value);
   };
   useEffect(() => {
+    socketRef.current?.on("sync-res", (data: any) => {
+      if (userid === data.userid && roomid === roomid) {
+        setCode(data?.code);
+      }
+    });
     socketRef.current?.on("message", (data: any) => {
-      if (roomID === data?.room) {
+      if (roomid === data?.room && userid !== data?.userid) {
         setCode(data?.code);
       }
     });
@@ -36,6 +43,7 @@ const EditorComponent: React.FC<any> = ({ roomID }) => {
       socketRef.current = await initSocket();
     };
     init();
+    socketRef.current?.emit("sync", { roomid: roomid, userid });
   }, []);
   return (
     <div className="pb-20 h-full">
@@ -61,7 +69,7 @@ const EditorComponent: React.FC<any> = ({ roomID }) => {
         value={code}
         theme={"vs-dark"}
         defaultValue="// Add Code Here"
-        onChange={handleEditorChange}
+        onChange={_.debounce(handleEditorChange, 1000)}
       />
     </div>
   );

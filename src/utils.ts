@@ -9,4 +9,3 @@ export const initSocket = async () => {
   };
   return io("localhost:1234" as string, options);
 };
-

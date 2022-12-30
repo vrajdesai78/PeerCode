@@ -30,7 +30,7 @@ const Room = () => {
   const router = useRouter();
   const { roomid } = router.query;
 
-  const [workspace, setWorkspace] = useState(WORKSPACES.WHITEBOARD);
+  const [workspace, setWorkspace] = useState(WORKSPACES.EDITOR);
   const huddleClient = getHuddleClient(
     "a74eec0d320d1ddbcedc423d4e8fc2dce13e007ca4ad16e1acac164b909efdd7"
   );
@@ -120,7 +120,7 @@ const Room = () => {
             </div>
           </div>
           <div className="relative w-[70vw] h-[80vh]  rounded-tl-none  bg-[#1E1E1E] rounded-md border-main border-2 pb-20 ">
-            {workspace === WORKSPACES.EDITOR && <Editor roomID={roomid} />}
+            {workspace === WORKSPACES.EDITOR && <Editor roomid={roomid} />}
             {workspace === WORKSPACES.WHITEBOARD && <WhiteBoard />}
           </div>
         </section>
