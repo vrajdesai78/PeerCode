@@ -1,12 +1,15 @@
 import React from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import Link from "next/link";
 
 function Nav() {
   return (
     <div className="top-0 flex border-0 border-b-[1px] border-[#282828] justify-around">
       <div className="flex m-3  relative items-center jutify-center ">
         <img src="./logo.svg" alt="logo" className="mr-2 h-5" />
-        <h1 className="text-title text-2xl pb-1 ">peercode</h1>
+        <Link href="/">
+          <h1 className="text-title text-2xl pb-1 ">peercode</h1>
+        </Link>
       </div>
       <div className="flex items-center">
         <h2></h2>

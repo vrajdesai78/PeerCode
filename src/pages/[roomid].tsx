@@ -41,7 +41,7 @@ const Room = () => {
   );
   const peersKeys = useHuddleStore((state) => Object.keys(state.peers));
   const lobbyPeers = useHuddleStore((state) => state.lobbyPeers);
-
+  const [webcam, setWebcam] = useState(false);
   const addr = address as string;
 
   const handleJoin = async () => {
@@ -57,23 +57,48 @@ const Room = () => {
       console.log({ error });
     }
   };
+  const handleWebcam = async () => {
+    if (webcam) {
+      huddleClient.enableWebcam();
+    } else {
+      huddleClient.disableWebcam();
+    }
+    setWebcam((prev) => !prev);
+  };
   return (
     <HuddleClientProvider value={huddleClient}>
       <main className="flex justify-evenly mt-5 ">
         <section className="mt-5">
           <div>
-            <div>
-              <button onClick={handleJoin}>Join Room</button>
-              <button onClick={() => huddleClient.enableWebcam()}>
-                Enable Webcam
-              </button>
-              <button onClick={() => huddleClient.disableWebcam()}>
-                Disable Webcam
+            <div className="w-fit flex items-center flex-col">
+              <MeVideoElem webcam={webcam} />
+
+              {/* <button
+                className="m-1 bg-main p-1 rounded-md"
+                onClick={handleJoin}
+              >
+                Join Room
+              </button> */}
+              <button
+                className=" m-1 bg-grey p-1 rounded-md w-[306px] flex items-center justify-center"
+                onClick={handleWebcam}
+              >
+                {webcam ? (
+                  <img
+                    src="./cam.svg"
+                    alt="webcam on"
+                    className="mx-1 mr-2 h-4 bg-grey"
+                  />
+                ) : (
+                  <img
+                    src="./camoff.svg"
+                    alt="webcam off"
+                    className="mx-1 mr-2 h-4 bg-grey"
+                  />
+                )}{" "}
+                Webcam
               </button>
             </div>
-
-            <MeVideoElem />
-
             {lobbyPeers[0] && <h2>Lobby Peers</h2>}
             <div>
               {lobbyPeers.map((peer, index) => (

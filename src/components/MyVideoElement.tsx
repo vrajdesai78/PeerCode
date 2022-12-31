@@ -1,7 +1,7 @@
 import { useHuddleStore } from "@huddle01/huddle01-client/store";
 import React, { useEffect, useRef } from "react";
 
-const MeVideoElem = () => {
+const MeVideoElem: React.FC<{ webcam: boolean }> = ({ webcam }) => {
   const stream = useHuddleStore((state) => state.stream);
   const isCamPaused = useHuddleStore((state) => state.isCamPaused);
 
@@ -14,13 +14,23 @@ const MeVideoElem = () => {
     console.log({ stream });
   }, [stream]);
   return (
-    <video
-      style={{ width: "50%" }}
-      ref={videoRef}
-      autoPlay
-      muted
-      playsInline
-    ></video>
+    <div className="mx-1 h-[176px] w-[306px] flex items-center border-2 rounded bg-grey border-main">
+      {webcam ? (
+        <img
+          src="./person.svg"
+          alt="comments"
+          className="mx-auto w-full h-20 bg-grey"
+        />
+      ) : (
+        <video
+          className="w-[306px] h-[176px]"
+          ref={videoRef}
+          autoPlay
+          muted
+          playsInline
+        ></video>
+      )}
+    </div>
   );
 };
 
