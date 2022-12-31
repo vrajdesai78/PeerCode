@@ -6,6 +6,15 @@ const http = require("http");
 const path = require("path");
 const { Server } = require("socket.io");
 
+const ACTIONS = {
+  JOIN: "join",
+  JOINED: "joined",
+  DISCONNECTED: "disconnected",
+  CODE_CHANGE: "code-change",
+  SYNC_CODE: "sync-code",
+  LEAVE: "leave",
+};
+
 const server = http.createServer(app);
 const io = new Server(server);
 
@@ -19,6 +28,14 @@ io.on("connection", (socket) => {
   socket.on("message", (evt) => {
     console.log(evt);
     socket.broadcast.emit("message", evt);
+  });
+  socket.on("notes", (evt) => {
+    console.log(evt);
+    socket.broadcast.emit("notes", evt);
+  });
+  socket.on("draw", (evt) => {
+    console.log(evt);
+    socket.broadcast.emit("draw", evt);
   });
 });
 io.on("disconnect", (evt) => {
