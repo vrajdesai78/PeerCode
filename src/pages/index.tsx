@@ -1,8 +1,16 @@
 import { useState, useEffect } from "react";
+import { useAccount } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { generateCode } from "../utils";
+import { useRouter } from 'next/router'
 
 export default function Home() {
+  const router = useRouter()
+  const {address,isConnected} = useAccount();
+  const [inputRoomId,setInputRoomId] = useState("")
   const [index, setIndex] = useState(0);
   const list = ["demo-1.png", "demo-2.png", "demo-3.png"];
+  
   useEffect(() => {
     const interval = setInterval(() => {
       setIndex((index) => index + 1);
@@ -11,6 +19,7 @@ export default function Home() {
       clearInterval(interval);
     };
   }, []);
+  
   return (
     <>
       <div className="flex flex-col sm:flex-row justify-evenly mt-5 sm:mt-10 items-center">
@@ -26,20 +35,32 @@ export default function Home() {
           <h3 className="text-[18px] text-subtitle ml-1">
             Built using <span className="text-main">{"Huddle01's"}</span> Web3
             video infrastructure
-          </h3>
-          <div className="flex mt-2">
-            <button className="text-subtitle text-lg bg-grey cursor-not-allowed px-2 pl-4 mt-3  py-1 rounded-md">
+          </h3> 
+          <button className="text-subtitle text-lg bg-grey cursor-not-allowed px-2 pl-4 mt-3  py-1 rounded-md">
               Find Peer <sup className="text-[10px]  bg-grey">soon</sup>
             </button>
-            <button className=" mt-3 text-lg hover:opacity-95 flex mx-5 bg-main text-title border-0 px-2 cursor-pointer py-1 rounded-md  items-center">
+          {isConnected?<div className="flex mt-2 justify-start">
+           
+         <button    onClick={()=>router.push(inputRoomId)} className=" mt-3 text-lg hover:opacity-95 flex mx-5 bg-main text-title border-0 px-2 cursor-pointer py-1 rounded-md  items-center">
               <img
                 src="./meet.svg"
                 alt="comments"
                 className="mx-1 mr-2 h-4 bg-main"
+             
               />
               Join a Room
             </button>
-          </div>
+            <input onChange={(e)=>{setInputRoomId(e.target.value)}} value={inputRoomId} className="h-10 text-lg  bg-grey outline-none text-title  rounded-md  items-center">
+              
+            </input>
+            <button  className=" mt-3 text-lg hover:opacity-95 flex mx-5 bg-main text-title border-0 px-2 cursor-pointer py-1 rounded-md  items-center" onClick={()=>{const roomid=  generateCode(); router.push(roomid) }}>Create a Room</button></div>
+         
+          : <div className=" flex mt-4">
+        
+        <ConnectButton label="Connect Wallet" accountStatus={"full"} />
+      </div>}
+          
+          
         </div>
         <img
           src={list[index % list.length]}

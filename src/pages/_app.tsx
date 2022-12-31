@@ -8,14 +8,13 @@ import {
   midnightTheme,
 } from "@rainbow-me/rainbowkit";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum } from "wagmi/chains";
-import { alchemyProvider } from "wagmi/providers/alchemy";
+import { mainnet, polygon, optimism, arbitrum,goerli } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 
 const { chains, provider } = configureChains(
-  [mainnet, polygon, optimism, arbitrum],
+  [mainnet, polygon, optimism, arbitrum,goerli],
   [
-    alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY as string }),
+   
     publicProvider(),
   ]
 );

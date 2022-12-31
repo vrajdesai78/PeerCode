@@ -42,6 +42,7 @@ const Room = () => {
   const peersKeys = useHuddleStore((state) => Object.keys(state.peers));
   const lobbyPeers = useHuddleStore((state) => state.lobbyPeers);
   const [webcam, setWebcam] = useState(false);
+  const [join,setJoin] = useState<boolean>(false);
   const addr = address as string;
 
   const handleJoin = async () => {
@@ -67,18 +68,20 @@ const Room = () => {
   };
   return (
     <HuddleClientProvider value={huddleClient}>
+        <p className="m-2 opacity-75">RoomID: {roomid}</p>
       <main className="flex justify-evenly mt-5 ">
         <section className="mt-5">
           <div>
             <div className="w-fit flex items-center flex-col">
               <MeVideoElem webcam={webcam} />
-
-              {/* <button
-                className="m-1 bg-main p-1 rounded-md"
-                onClick={handleJoin}
+{!join &&  <button
+                className="m-1 bg-grey p-1 rounded-md w-[306px] flex items-center justify-center"
+                onClick={()=>{handleJoin()
+                setJoin(true)}}
               >
                 Join Room
-              </button> */}
+              </button>}
+             
               <button
                 className=" m-1 bg-grey p-1 rounded-md w-[306px] flex items-center justify-center"
                 onClick={handleWebcam}
@@ -99,12 +102,7 @@ const Room = () => {
                 Webcam
               </button>
             </div>
-            {lobbyPeers[0] && <h2>Lobby Peers</h2>}
-            <div>
-              {lobbyPeers.map((peer, index) => (
-                <div key={index}>{peer.peerId}</div>
-              ))}
-            </div>
+           
 
             {peersKeys[0] && <h2>Peers</h2>}
 

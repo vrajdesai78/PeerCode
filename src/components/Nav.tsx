@@ -1,6 +1,38 @@
+//@ts-ignore
 import React from "react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
 import Link from "next/link";
+import { create as ipfsHttpClient } from "ipfs-http-client";
+
+
+const projectId = process.env.PROJECT_ID;
+const projectSecret = process.env.INFURA_API_SECRET;
+const authorization = "Basic " + Buffer.from((projectId + ":" + projectSecret),"base64");
+
+const ipfs = ipfsHttpClient({
+  url: "https://ipfs.infura.io:5001/api/v0",
+  headers:{
+    authorization
+  }
+})
+
+const onSubmitHandler = async (event: { preventDefault: () => void; target: any; }) => {
+
+  event.preventDefault();
+  const form = event.target;
+  const files = form.files;
+
+  if (!files || files.length === 0) {
+    return alert("No files selected");
+  }
+
+  const file = files[0];
+  const result = await ipfs.add(file);
+
+
+ 
+
+  form.reset();
+};
 
 function Nav() {
   return (
@@ -11,24 +43,9 @@ function Nav() {
           <h1 className="text-title text-2xl pb-1 ">peercode</h1>
         </Link>
       </div>
-      <div className="flex items-center">
-        <h2></h2>
-        <button className="text-subtitle text-sm bg-grey cursor-not-allowed px-2 pl-4 py-1 rounded-md">
-          Find Peer <sup className="text-[10px]  bg-grey">soon</sup>
-        </button>
-        <button className=" text-sm hover:opacity-95 flex mx-5 bg-main text-title border-0 px-2 cursor-pointer py-1 rounded-md  items-center">
-          <img
-            src="./meet.svg"
-            alt="comments"
-            className="mx-1 mr-2 h-4 bg-main"
-          />
-          Join a Room
-        </button>
-        <div className="">
-          {" "}
-          <ConnectButton label="Connect Wallet" accountStatus={"full"} />
-        </div>
-      </div>
+      {/* <div>
+      <input type="file" onChange={(e)=>onSubmitHandler(e)} />
+    </div> */}
     </div>
   );
 }
