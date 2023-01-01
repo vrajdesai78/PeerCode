@@ -3,7 +3,10 @@ import _ from "lodash";
 import Editor from "@monaco-editor/react";
 import { initSocket } from "../utils";
 
-const EditorComponent: React.FC<any> = (roomid, userid) => {
+const EditorComponent: React.FC<{
+  roomid: string | string[] | undefined;
+  userid: number;
+}> = (roomid, userid) => {
   const [code, setCode] = useState("const ");
   const [language, setLanguage] = useState("javascript");
   const socketRef = React.useRef<any>(null);

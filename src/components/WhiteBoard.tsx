@@ -21,7 +21,10 @@ function blob2canvas(canvas, blob) {
   img.setAttribute("src", blob);
 }
 
-function WhiteBoard({ roomid, userid }) {
+const WhiteBoard: React.FC<{
+  roomid: string | string[] | undefined;
+  userid: number;
+}> = ({ roomid, userid }) => {
   const containerRef = useRef(null);
   const socketRef = React.useRef<any>(null);
   const canvasRef = useRef(null);
@@ -396,6 +399,6 @@ function WhiteBoard({ roomid, userid }) {
       </div>
     </div>
   );
-}
+};
 
 export default WhiteBoard;

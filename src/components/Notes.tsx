@@ -4,7 +4,10 @@ import "react-quill/dist/quill.snow.css";
 import { initSocket } from "../utils";
 import _ from "lodash";
 
-function Notes({ roomid, userid }) {
+const Notes: React.FC<{
+  roomid: string | string[] | undefined;
+  userid: number;
+}> = ({ roomid, userid }) => {
   const [value, setValue] = useState("");
   const socketRef = React.useRef<any>(null);
   const handleChange = (e: any) => null;
@@ -58,6 +61,6 @@ function Notes({ roomid, userid }) {
       />
     </div>
   );
-}
+};
 
 export default Notes;
