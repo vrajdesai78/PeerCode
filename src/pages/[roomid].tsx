@@ -39,9 +39,11 @@ const Room = () => {
   const huddleClient = getHuddleClient(
     "a74eec0d320d1ddbcedc423d4e8fc2dce13e007ca4ad16e1acac164b909efdd7"
   );
+  huddleClient.allowAllLobbyPeersToJoinRoom();
   const peersKeys = useHuddleStore((state) => Object.keys(state.peers));
   const lobbyPeers = useHuddleStore((state) => state.lobbyPeers);
   const [webcam, setWebcam] = useState(false);
+  const [mic,setMic] = useState<boolean>(false);
   const [join,setJoin] = useState<boolean>(false);
   const addr = address as string;
 
@@ -50,7 +52,7 @@ const Room = () => {
       await huddleClient.join(roomid as string, {
         address: addr,
         wallet: "metamask",
-        ens: "pratham.eth",
+        ens: "  ",
       });
 
       console.log("joined");
@@ -65,6 +67,14 @@ const Room = () => {
       huddleClient.disableWebcam();
     }
     setWebcam((prev) => !prev);
+  };
+  const handleMic = async () => {
+    if (webcam) {
+      huddleClient.enableMic();
+    } else {
+      huddleClient.disableMic();
+    }
+    setMic((prev) => !prev);
   };
   return (
     <HuddleClientProvider value={huddleClient}>
@@ -81,7 +91,26 @@ const Room = () => {
               >
                 Join Room
               </button>}
-             
+
+              <button
+                className=" m-1 bg-grey p-1 rounded-md w-[306px] flex items-center justify-center"
+                onClick={handleMic}
+              >
+                {webcam ? (
+                  <img
+                    src="./cam.svg"
+                    alt="webcam on"
+                    className="mx-1 mr-2 h-4 bg-grey"
+                  />
+                ) : (
+                  <img
+                    src="./camoff.svg"
+                    alt="webcam off"
+                    className="mx-1 mr-2 h-4 bg-grey"
+                  />
+                )}{" "}
+                Mic
+              </button>
               <button
                 className=" m-1 bg-grey p-1 rounded-md w-[306px] flex items-center justify-center"
                 onClick={handleWebcam}
@@ -102,7 +131,12 @@ const Room = () => {
                 Webcam
               </button>
             </div>
-           
+            {lobbyPeers[0] && <h2>Lobby Peers</h2>}
+            <div>
+              {lobbyPeers.map((peer) => (
+                <div>{peer.peerId}</div>
+              ))}
+            </div>
 
             {peersKeys[0] && <h2>Peers</h2>}
 
