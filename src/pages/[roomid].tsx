@@ -39,11 +39,12 @@ const Room = () => {
   const huddleClient = getHuddleClient(
     "a74eec0d320d1ddbcedc423d4e8fc2dce13e007ca4ad16e1acac164b909efdd7"
   );
-  huddleClient.allowAllLobbyPeersToJoinRoom();
+ 
   const peersKeys = useHuddleStore((state) => Object.keys(state.peers));
   const lobbyPeers = useHuddleStore((state) => state.lobbyPeers);
   const [webcam, setWebcam] = useState(false);
   const [mic,setMic] = useState<boolean>(false);
+  
   const [join,setJoin] = useState<boolean>(false);
   const addr = address as string;
 
@@ -79,6 +80,7 @@ const Room = () => {
   return (
     <HuddleClientProvider value={huddleClient}>
         <p className="m-2 opacity-75">RoomID: {roomid}</p>
+
       <main className="flex justify-evenly mt-5 ">
         <section className="mt-5">
           <div>
@@ -132,9 +134,13 @@ const Room = () => {
               </button>
             </div>
             {lobbyPeers[0] && <h2>Lobby Peers</h2>}
-            <div>
+            {lobbyPeers[0] && <p onClick={()=>{huddleClient.allowAllLobbyPeersToJoinRoom();}}>allow all to join</p>}
+            <div className="flex flex-col gap-2">
+          
               {lobbyPeers.map((peer) => (
-                <div>{peer.peerId}</div>
+                <div className="bg-blue-800" key={peer.peerId}>{peer.displayName?peer.displayName:peer.peerId}
+                <p onClick={()=>{huddleClient.allowLobbyPeerToJoinRoom(peer.peerId)}}>Allow</p>
+                <p onClick={()=>{huddleClient.disallowLobbyPeerFromJoiningRoom(peer.peerId)}}> Deny</p></div>
               ))}
             </div>
 
