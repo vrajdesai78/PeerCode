@@ -40,8 +40,8 @@ export default function Home() {
               Find Peer <sup className="text-[10px]  bg-grey">soon</sup>
             </button>
           {isConnected?<div className="flex mt-2 justify-start">
-           
-         <button    onClick={()=>router.push(inputRoomId)} className=" mt-3 text-lg hover:opacity-95 flex mx-5 bg-main text-title border-0 px-2 cursor-pointer py-1 rounded-md  items-center">
+           <div className="flex">
+         <button onClick={()=>router.push(inputRoomId)} className=" mt-3 text-lg hover:opacity-95 flex mx-5 bg-main text-title border-0 px-2 cursor-pointer py-1 rounded-md  items-center">
               <img
                 src="./meet.svg"
                 alt="comments"
@@ -50,9 +50,9 @@ export default function Home() {
               />
               Join a Room
             </button>
-            <input onChange={(e)=>{setInputRoomId(e.target.value)}} value={inputRoomId} className="h-10 text-lg  bg-grey outline-none text-title  rounded-md  items-center">
+            <input onChange={(e)=>{setInputRoomId(e.target.value)}} value={inputRoomId} placeholder="Enter RoomID:" className=" mt-3 h-10 text-lg  bg-grey outline-none placeholder:px-2 px-2 text-title  rounded-md  items-center"/>
               
-            </input>
+            </div>
             <button  className=" mt-3 text-lg hover:opacity-95 flex mx-5 bg-main text-title border-0 px-2 cursor-pointer py-1 rounded-md  items-center" onClick={()=>{const roomid=  generateCode(); router.push(roomid) }}>Create a Room</button></div>
          
           : <div className=" flex mt-4">

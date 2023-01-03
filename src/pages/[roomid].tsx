@@ -86,27 +86,27 @@ const Room = () => {
           <div>
             <div className="w-fit flex items-center flex-col">
               <MeVideoElem webcam={webcam} />
-{!join &&  <button
+        {!join &&  <button
                 className="m-1 bg-grey p-1 rounded-md w-[306px] flex items-center justify-center"
                 onClick={()=>{handleJoin()
                 setJoin(true)}}
               >
-                Join Room
+                I'm Ready
               </button>}
 
               <button
                 className=" m-1 bg-grey p-1 rounded-md w-[306px] flex items-center justify-center"
                 onClick={handleMic}
               >
-                {webcam ? (
+                {mic ? (
                   <img
-                    src="./cam.svg"
+                    src="./mic.svg"
                     alt="webcam on"
                     className="mx-1 mr-2 h-4 bg-grey"
                   />
                 ) : (
                   <img
-                    src="./camoff.svg"
+                    src="./micoff.svg"
                     alt="webcam off"
                     className="mx-1 mr-2 h-4 bg-grey"
                   />
@@ -133,16 +133,16 @@ const Room = () => {
                 Webcam
               </button>
             </div>
-            {lobbyPeers[0] && <h2>Lobby Peers</h2>}
-            {lobbyPeers[0] && <p onClick={()=>{huddleClient.allowAllLobbyPeersToJoinRoom();}}>allow all to join</p>}
-            <div className="flex flex-col gap-2">
+            {lobbyPeers[0] && <h2 className="px-4 text-lg">Lobby Peers 👾</h2>}
+            {lobbyPeers[0] && <p className="cursor-pointer bg-grey p-4 mb-4 mt-2 rounded-lg" onClick={()=>{huddleClient.allowAllLobbyPeersToJoinRoom();}}>Allow everyone to join ✨ </p>}
+            
           
               {lobbyPeers.map((peer) => (
-                <div className="bg-blue-800" key={peer.peerId}>{peer.displayName?peer.displayName:peer.peerId}
-                <p onClick={()=>{huddleClient.allowLobbyPeerToJoinRoom(peer.peerId)}}>Allow</p>
-                <p onClick={()=>{huddleClient.disallowLobbyPeerFromJoiningRoom(peer.peerId)}}> Deny</p></div>
+                <div  className="p-4 bg-grey flex-col rounded-lg flex gap-2" key={peer.peerId}><p>{peer.displayName?peer.displayName:peer.peerId} 🧑🏼‍💻 wants to join peercoding session:</p>
+                <p className="bg-main p-2 rounded-lg" onClick={()=>{huddleClient.allowLobbyPeerToJoinRoom(peer.peerId)}}>Allow ✅ </p>
+                <p  className="bg-main p-2 rounded-lg" onClick={()=>{huddleClient.disallowLobbyPeerFromJoiningRoom(peer.peerId)}}> Deny 🙅🏻‍♂️</p> </div>
               ))}
-            </div>
+           
 
             {peersKeys[0] && <h2>Peers</h2>}
 
