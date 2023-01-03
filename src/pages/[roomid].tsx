@@ -69,8 +69,9 @@ const Room = () => {
     }
     setWebcam((prev) => !prev);
   };
+
   const handleMic = async () => {
-    if (webcam) {
+    if (mic) {
       huddleClient.enableMic();
     } else {
       huddleClient.disableMic();
@@ -110,7 +111,7 @@ const Room = () => {
                     alt="webcam off"
                     className="mx-1 mr-2 h-4 bg-grey"
                   />
-                )}{" "}
+                )}
                 Mic
               </button>
               <button
