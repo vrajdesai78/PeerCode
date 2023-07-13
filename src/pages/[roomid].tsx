@@ -1,16 +1,20 @@
 //@ts-ignore
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
-  HuddleClientProvider,
-  getHuddleClient,
-} from "@huddle01/huddle01-client";
-
-import { useHuddleStore } from "@huddle01/huddle01-client/store";
-import PeerVideoAudioElem from "../components/PeerElement";
-import MeVideoElem from "../components/MyVideoElement";
+  useHuddle01,
+  useVideo,
+  useAudio,
+  useLobby,
+  useRoom,
+  useEventListener,
+  usePeers,
+} from "@huddle01/react/hooks";
 import { useAccount } from "wagmi";
 import _ from "lodash";
+import VideoElem from "../components/Video";
+import AudioElem from "../components/Audio";
+import { BasicIcons } from "../components/BasicIcons";
 
 import dynamic from "next/dynamic";
 
@@ -36,120 +40,161 @@ const Room = () => {
   const { roomid } = router.query;
   const userid = _.random(1000);
   const [workspace, setWorkspace] = useState(WORKSPACES.EDITOR);
-  const huddleClient = getHuddleClient(
-    "a74eec0d320d1ddbcedc423d4e8fc2dce13e007ca4ad16e1acac164b909efdd7"
-  );
- 
-  const peersKeys = useHuddleStore((state) => Object.keys(state.peers));
-  const lobbyPeers = useHuddleStore((state) => state.lobbyPeers);
+
+  const { initialize, me, roomState } = useHuddle01();
+  const { joinLobby } = useLobby();
+  const { joinRoom, leaveRoom, isRoomJoined } = useRoom();
+  const {
+    fetchVideoStream,
+    stopVideoStream,
+    produceVideo,
+    stopProducingVideo,
+    stream: camStream,
+  } = useVideo();
+  const {
+    fetchAudioStream,
+    stopAudioStream,
+    produceAudio,
+    stopProducingAudio,
+    stream: micStream,
+  } = useAudio();
+
+  const { peers } = usePeers();
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+
   const [webcam, setWebcam] = useState(false);
-  const [mic,setMic] = useState<boolean>(false);
-  
-  const [join,setJoin] = useState<boolean>(false);
+  const [mic, setMic] = useState<boolean>(false);
+
+  const [join, setJoin] = useState<boolean>(false);
   const addr = address as string;
 
+  useEffect(() => {
+    initialize(process.env.NEXT_PUBLIC_PROJECT_ID as string);
+  }, [roomid]);
+
   const handleJoin = async () => {
-    try {
-      await huddleClient.join(roomid as string, {
-        address: addr,
-        wallet: "metamask",
-        ens: "  ",
-      });
-
-      console.log("joined");
-    } catch (error) {
-      console.log({ error });
-    }
-  };
-  const handleWebcam = async () => {
-    if (webcam) {
-      huddleClient.enableWebcam();
-    } else {
-      huddleClient.disableWebcam();
-    }
-    setWebcam((prev) => !prev);
+    joinLobby(roomid as string);
   };
 
-  const handleMic = async () => {
-    if (mic) {
-      huddleClient.enableMic();
-    } else {
-      huddleClient.disableMic();
+  useEventListener("lobby:joined", () => {
+    joinRoom();
+  });
+
+  useEventListener("app:cam-on", (stream) => {
+    produceVideo(stream);
+  });
+
+  useEventListener("app:cam-off", () => {
+    if (isRoomJoined) {
+      stopProducingVideo();
     }
-    setMic((prev) => !prev);
-  };
+  });
+
+  useEventListener("app:mic-on", (stream) => {
+    produceVideo(stream)
+  });
+
+  useEventListener("app:mic-off", () => {
+    stopProducingAudio();
+  });
+
+  useEffect(() => {
+    if (camStream && videoRef.current) {
+      videoRef.current.srcObject = camStream;
+    }
+  }, [camStream]);
+
   return (
-    <HuddleClientProvider value={huddleClient}>
-        <p className="m-2 opacity-75">RoomID: {roomid}</p>
+    <>
+      <div className="m-2 opacity-75">RoomState: {roomState}</div>
 
       <main className="flex justify-evenly mt-5 ">
         <section className="mt-5">
           <div>
             <div className="w-fit flex items-center flex-col">
-              <MeVideoElem webcam={webcam} />
-        {!join &&  <button
-                className="m-1 bg-grey p-1 rounded-md w-[306px] flex items-center justify-center"
-                onClick={()=>{handleJoin()
-                setJoin(true)}}
-              >
-                I'm Ready
-              </button>}
-
-              <button
-                className=" m-1 bg-grey p-1 rounded-md w-[306px] flex items-center justify-center"
-                onClick={handleMic}
-              >
-                {mic ? (
+              <div className="mx-1 h-[176px] w-[306px] flex items-center border-2 rounded bg-grey border-main">
+                {!camStream ? (
                   <img
-                    src="./mic.svg"
-                    alt="webcam on"
-                    className="mx-1 mr-2 h-4 bg-grey"
+                    src="./person.svg"
+                    alt="comments"
+                    className="mx-auto w-full h-20 bg-grey"
                   />
                 ) : (
-                  <img
-                    src="./micoff.svg"
-                    alt="webcam off"
-                    className="mx-1 mr-2 h-4 bg-grey"
-                  />
+                  <video
+                    className="min-h-full min-w-full object-cover"
+                    ref={videoRef}
+                    autoPlay
+                    muted
+                    playsInline
+                  ></video>
                 )}
-                Mic
-              </button>
-              <button
-                className=" m-1 bg-grey p-1 rounded-md w-[306px] flex items-center justify-center"
-                onClick={handleWebcam}
-              >
-                {webcam ? (
-                  <img
-                    src="./cam.svg"
-                    alt="webcam on"
-                    className="mx-1 mr-2 h-4 bg-grey"
-                  />
-                ) : (
-                  <img
-                    src="./camoff.svg"
-                    alt="webcam off"
-                    className="mx-1 mr-2 h-4 bg-grey"
-                  />
-                )}{" "}
-                Webcam
-              </button>
-            </div>
-            {lobbyPeers[0] && <h2 className="px-4 text-lg">Lobby Peers 👾</h2>}
-            {lobbyPeers[0] && <p className="cursor-pointer bg-grey p-4 mb-4 mt-2 rounded-lg" onClick={()=>{huddleClient.allowAllLobbyPeersToJoinRoom();}}>Allow everyone to join ✨ </p>}
-            
-          
-              {lobbyPeers.map((peer) => (
-                <div  className="p-4 bg-grey flex-col rounded-lg flex gap-2" key={peer.peerId}><p>{peer.displayName?peer.displayName:peer.peerId} 🧑🏼‍💻 wants to join peercoding session:</p>
-                <p className="bg-main p-2 rounded-lg" onClick={()=>{huddleClient.allowLobbyPeerToJoinRoom(peer.peerId)}}>Allow ✅ </p>
-                <p  className="bg-main p-2 rounded-lg" onClick={()=>{huddleClient.disallowLobbyPeerFromJoiningRoom(peer.peerId)}}> Deny 🙅🏻‍♂️</p> </div>
-              ))}
-           
+              </div>
+              {!join && (
+                <button
+                  className="m-1 bg-grey p-1 rounded-md w-[306px] flex items-center justify-center"
+                  onClick={async () => {
+                    await handleJoin();
+                    setJoin(true);
+                  }}
+                >
+                  I'm Ready
+                </button>
+              )}
 
-            {peersKeys[0] && <h2>Peers</h2>}
+              <div className="flex w-full flex-row items-center justify-center gap-8">
+                {!camStream ? (
+                  <button
+                    onClick={() => {
+                      fetchVideoStream();
+                    }}
+                    className="bg-brand-500 flex h-10 w-10 items-center justify-center rounded-xl"
+                  >
+                    {BasicIcons.inactive["cam"]}
+                  </button>
+                ) : (
+                  <button
+                    onClick={stopVideoStream}
+                    className={
+                      "flex h-10 w-10 items-center justify-center rounded-xl"
+                    }
+                  >
+                    {BasicIcons.active["cam"]}
+                  </button>
+                )}
+                {!micStream ? (
+                  <button
+                    onClick={() => {
+                      fetchAudioStream();
+                    }}
+                    className="bg-brand-500 flex h-10 w-10 items-center justify-center rounded-xl"
+                  >
+                    {BasicIcons.inactive["mic"]}
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      stopAudioStream();
+                    }}
+                    className={
+                      "flex h-10 w-10 items-center justify-center rounded-xl"
+                    }
+                  >
+                    {BasicIcons.active["mic"]}
+                  </button>
+                )}
+              </div>
+            </div>
+            {peers[0] && <h2 className="px-4 text-lg">Lobby Peers 👾</h2>}
+
+            {peers[0] && <h2>Peers</h2>}
 
             <div>
-              {peersKeys.map((key) => (
-                <PeerVideoAudioElem key={`peerId-${key}`} peerIdAtIndex={key} />
+              {Object.values(peers).map((peer) => (
+                <div className="mx-1 h-[176px] w-[306px] flex items-center border-2 rounded bg-grey border-main" key={peer.peerId}>
+                  {peer.cam && <VideoElem track={peer.cam} key={peer.peerId} />}
+                  {peer.mic && <AudioElem track={peer.mic} key={peer.peerId} />}
+                </div>
               ))}
             </div>
           </div>
@@ -201,7 +246,7 @@ const Room = () => {
           </div>
         </section>
       </main>
-    </HuddleClientProvider>
+    </>
   );
 };
 

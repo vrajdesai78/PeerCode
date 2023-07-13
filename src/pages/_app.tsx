@@ -7,32 +7,30 @@ import {
   RainbowKitProvider,
   midnightTheme,
 } from "@rainbow-me/rainbowkit";
-import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum,goerli } from "wagmi/chains";
+import { WagmiConfig, createConfig, configureChains } from "wagmi";
+import { mainnet, polygon, optimism, arbitrum, zora } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 
-const { chains, provider } = configureChains(
-  [mainnet, polygon, optimism, arbitrum,goerli],
-  [
-   
-    publicProvider(),
-  ]
+const { chains, publicClient } = configureChains(
+  [mainnet, polygon, optimism, arbitrum, zora],
+  [publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
-  appName: "PeerCode",
+  appName: "Test",
+  projectId: "33e28c5d43009b3668cccf62984e6dbe",
   chains,
 });
 
-const wagmiClient = createClient({
+const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
-  provider,
+  publicClient,
 });
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <WagmiConfig client={wagmiClient}>
+    <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider
         chains={chains}
         theme={midnightTheme({
