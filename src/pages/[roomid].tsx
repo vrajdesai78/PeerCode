@@ -35,15 +35,14 @@ const WORKSPACES = {
 };
 
 const Room = () => {
-  const { address, isConnected } = useAccount();
   const router = useRouter();
   const { roomid } = router.query;
   const userid = _.random(1000);
   const [workspace, setWorkspace] = useState(WORKSPACES.EDITOR);
 
-  const { initialize, me, roomState } = useHuddle01();
+  const { initialize, roomState } = useHuddle01();
   const { joinLobby } = useLobby();
-  const { joinRoom, leaveRoom, isRoomJoined } = useRoom();
+  const { joinRoom, isRoomJoined } = useRoom();
   const {
     fetchVideoStream,
     stopVideoStream,
@@ -63,12 +62,7 @@ const Room = () => {
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const [webcam, setWebcam] = useState(false);
-  const [mic, setMic] = useState<boolean>(false);
-
   const [join, setJoin] = useState<boolean>(false);
-  const addr = address as string;
-
   useEffect(() => {
     initialize(process.env.NEXT_PUBLIC_PROJECT_ID as string);
   }, [roomid]);
