@@ -42,7 +42,7 @@ const Room = () => {
 
   const { initialize, roomState } = useHuddle01();
   const { joinLobby } = useLobby();
-  const { joinRoom, isRoomJoined } = useRoom();
+  const { joinRoom, isRoomJoined, leaveRoom } = useRoom();
   const {
     fetchVideoStream,
     stopVideoStream,
@@ -86,7 +86,7 @@ const Room = () => {
   });
 
   useEventListener("app:mic-on", (stream) => {
-    produceVideo(stream)
+    produceVideo(stream);
   });
 
   useEventListener("app:mic-off", () => {
@@ -177,6 +177,15 @@ const Room = () => {
                     {BasicIcons.active["mic"]}
                   </button>
                 )}
+               {isRoomJoined && <button
+                  onClick={() => {
+                    leaveRoom();
+                    setJoin(false);
+                  }}
+                  className="bg-brand-500 flex h-10 w-10 items-center justify-center rounded-xl"
+                >
+                  {BasicIcons.close}
+                </button>}
               </div>
             </div>
             {peers[0] && <h2 className="px-4 text-lg">Lobby Peers 👾</h2>}
@@ -185,7 +194,10 @@ const Room = () => {
 
             <div>
               {Object.values(peers).map((peer) => (
-                <div className="mx-1 h-[176px] w-[306px] flex items-center border-2 rounded bg-grey border-main" key={peer.peerId}>
+                <div
+                  className="mx-1 h-[176px] w-[306px] flex items-center border-2 rounded bg-grey border-main"
+                  key={peer.peerId}
+                >
                   {peer.cam && <VideoElem track={peer.cam} key={peer.peerId} />}
                   {peer.mic && <AudioElem track={peer.mic} key={peer.peerId} />}
                 </div>
